@@ -22,8 +22,15 @@ public class TimerCheck extends Check {
         this.maxSpeedPercentage = plugin.getConfig().getDouble("checks.timer.max-speed-percentage", 110.0);
     }
 
-    public void handle(PlayerData data) {
+    public void handle(PlayerData data, com.github.retrooper.packetevents.event.PacketReceiveEvent event) {
         if (isExempt(data)) return;
+
+        // If the player owes "time debt", cancel their packet and decrement the debt.
+        if (data.getTimerCancelTicks() > 0) {
+            data.setTimerCancelTicks(data.getTimerCancelTicks() - 1);
+            event.setCancelled(true);
+            // We do not return here, we still want to track the packet count to evaluate Timer
+        }
 
         long now = System.currentTimeMillis();
         long lastTime = data.getTimerLastCheck();
@@ -50,9 +57,19 @@ public class TimerCheck extends Check {
 
         // Only flag if consistently above threshold
         // Allow burst margin — network jitter can cause packets to bunch up
-        if (percentage > maxSpeedPercentage && packets > 50) {
+        if (percentage > maxSpeedPercentage && packets > expected + 1) {
             flag(data, String.format("timer=%.1f%% packets=%d expected=%.0f",
                     percentage, packets, expected));
+            
+            // Time Debt: They sent too many packets, stealing time from the server.
+            // Calculate how many extra packets they sent.
+            int excess = (int) (packets - expected);
+            
+            // Add the excess to their debt. The server will ignore their next X movements,
+            // completely rubberbanding them and freezing them in place.
+            data.setTimerCancelTicks(data.getTimerCancelTicks() + excess);
+            
+            event.setCancelled(true);
         } else {
             reward(data);
         }

@@ -172,7 +172,10 @@ public class FastBreakCheck extends Check {
 
         // Calculate ticks
         double damage = speedMultiplier / hardness;
-        if (isCorrectTool(tool != null ? tool.getType() : Material.AIR, material)) {
+        boolean canHarvest = isCorrectTool(tool != null ? tool.getType() : Material.AIR, material) 
+                || !requiresSpecificTool(material);
+                
+        if (canHarvest) {
             damage /= 30.0;
         } else {
             damage /= 100.0;
@@ -229,5 +232,20 @@ public class FastBreakCheck extends Check {
         if (name.contains("DIAMOND")) return 8.0;
         if (name.contains("NETHERITE")) return 9.0;
         return 1.0;
+    }
+
+    private boolean requiresSpecificTool(Material material) {
+        String name = material.name();
+        return name.contains("STONE") || name.contains("ORE") || name.contains("IRON") || 
+               name.contains("GOLD") || name.contains("DIAMOND") || name.contains("EMERALD") || 
+               name.contains("NETHERITE") || name.contains("OBSIDIAN") || name.contains("BRICK") || 
+               name.contains("TERRACOTTA") || name.contains("CONCRETE") || name.contains("ANVIL") ||
+               name.contains("DEEPSLATE") || name.contains("PRISMARINE") || name.contains("AMETHYST") ||
+               name.contains("BASALT") || name.contains("LAPIS") || name.contains("REDSTONE_BLOCK") ||
+               name.contains("QUARTZ") || name.contains("COAL_BLOCK") || name.contains("COPPER") ||
+               name.contains("SPAWNER") || name.contains("PURPUR") || name.contains("BLACKSTONE") ||
+               name.contains("END_STONE") || name.contains("SHULKER_BOX") || name.contains("CRYING_OBSIDIAN") ||
+               name.contains("RESPAWN_ANCHOR") || name.contains("LODESTONE") || name.contains("BELL") ||
+               name.contains("LANTERN") || name.contains("CHAIN") || name.contains("ENCHANTING_TABLE");
     }
 }

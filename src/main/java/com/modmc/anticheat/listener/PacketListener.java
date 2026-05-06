@@ -57,7 +57,7 @@ public class PacketListener extends PacketListenerAbstract {
             // Run Timer check ONLY on movement packets
             for (Check check : plugin.getCheckManager().getPlayerChecks()) {
                 if (check instanceof TimerCheck) {
-                    ((TimerCheck) check).handle(data);
+                    ((TimerCheck) check).handle(data, event);
                 }
             }
 

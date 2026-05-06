@@ -46,6 +46,23 @@ public abstract class Check {
         // Increment violation level
         int vl = data.incrementViolation(checkType);
 
+        String message = plugin.getPrefix() + "&e" + data.getName() + " &7failed &c" + checkType.getDisplayName() 
+                + " &7[&fVL: " + vl + "&7] &8(" + details + ")";
+        String colorized = com.modmc.anticheat.util.ColorUtil.colorize(message);
+
+        // Send verbose to staff with verbose mode enabled (bypasses alertVL)
+        for (Player staff : org.bukkit.Bukkit.getOnlinePlayers()) {
+            if (staff.hasPermission("modac.verbose")) {
+                PlayerData staffData = plugin.getCheckManager().getPlayerData(staff.getUniqueId());
+                if (staffData != null && staffData.isVerboseEnabled()) {
+                    staff.sendMessage(colorized);
+                }
+            }
+        }
+        
+        // Also send verbose to console
+        org.bukkit.Bukkit.getConsoleSender().sendMessage(com.modmc.anticheat.util.ColorUtil.colorize("&8[Verbose] &r" + colorized));
+
         // Alert staff if VL meets threshold
         if (vl >= alertVL) {
             plugin.getAlertManager().sendAlert(data, checkType, vl, details);

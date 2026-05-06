@@ -78,6 +78,7 @@ public class PlayerData {
     // --- Timer ---
     private long timerLastCheck;
     private int timerPacketCount;
+    private int timerCancelTicks;
 
     // Max history size
     private static final int MAX_LOCATION_HISTORY = 20;
@@ -269,6 +270,14 @@ public class PlayerData {
     public void incrementPacketCount() {
         totalPackets++;
         lastPacketTime = System.currentTimeMillis();
+    }
+
+    public int getTimerCancelTicks() {
+        return timerCancelTicks;
+    }
+
+    public void setTimerCancelTicks(int timerCancelTicks) {
+        this.timerCancelTicks = timerCancelTicks;
     }
 
     // ===========================

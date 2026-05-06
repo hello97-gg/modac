@@ -1,93 +1,154 @@
 # ModMC AntiCheat 🛡️
 
-Hey everyone! 👋 Welcome to ModMC AntiCheat. 
+> *Finally, an anti-cheat that doesn't make you want to pull your hair out.*
 
-I was tired of heavy, bloated anti-cheats that lagged the server or required five different dependencies just to run. So, I built this. It's a lightweight, extremely fast anti-cheat built natively on top of [PacketEvents](https://github.com/retrooper/packetevents). It uses strict math and packet analysis to catch modern hack clients instantly, while making sure legitimate players don't get rubberbanded or false-flagged just for having high ping.
+Look, I get it. You've probably tried like five different anti-cheats by now. One was too heavy and tanked your TPS. Another had more false positives than a budget smoke detector. The "premium" one required seventeen dependencies and a PhD to configure.
 
-If you're running a server anywhere from 1.8 to 1.21.3, you can just drop this in and it works out of the box.
+So yeah, I built this instead.
 
----
+**ModMC AntiCheat** is a lightweight, stupid-fast anti-cheat that runs natively on [PacketEvents](https://github.com/retrooper/packetevents). No bloat, no nonsense. It uses strict math and packet analysis to catch modern hack clients without punishing your legit players for having the audacity to play on WiFi instead of ethernet.
 
-## 🌟 Why use this?
-
-- **Zero setup nightmare:** No dependencies required (PacketEvents is shaded in). Drag, drop, restart. 
-- **Discord Integration built-in:** It sends live cheat alerts and punishment logs straight to your Discord webhook.
-- **In-game Live Monitoring:** Staff can type `/modac monitor <player>` and literally watch a live feed of that specific player's violation flags stream into their chat.
-- **Database support:** Uses SQLite to log everything asynchronously, so you can look up a player's history days later without lagging the main thread.
-- **Highly Configurable:** Want to ban instead of kick? Just change a line in the config.
+**Works on:** 1.8 → 1.21.3 (yeah, it covers basically everything)
 
 ---
 
-## 🛠️ What does it actually catch?
+## So... why should you care?
 
-Right now, we have 16 highly tuned checks covering the most common modern client bypasses:
+I'm not gonna give you the corporate pitch. Here's the real deal:
 
-### 🏃 Movement
-* **Speed:** Checks your horizontal math. Tries to catch bunny-hopping, speed pots, ice-sprinting, etc.
-* **Fly:** Tracks airtime and weird vertical hovering. Instantly catches packet-based flight and high jumps.
-* **NoFall:** Stops people from spoofing their ground state to avoid taking fall damage.
-* **Jesus:** Checks your bounding box against surrounding blocks to prevent water/lava walking.
-* **ElytraFly:** Limits infinite flight and crazy firework boosting.
-* **NoSlow:** Catches players moving at full sprint speed while eating, blocking, or drawing a bow.
+**Actually plug-and-play** — PacketEvents is shaded in. No hunting down dependencies, no version conflicts, none of that mess. Drop the jar, restart, done. You could literally set this up during a bathroom break.
 
-### ⚔️ Combat
-* **Reach:** Strict 3D raytracing to stop players hitting from impossible distances.
-* **KillAura:** Looks at attack angles and inhuman consistency.
-* **AutoClicker:** Uses standard deviation to find robotic clicking patterns.
-* **Velocity:** Anti-KB check. Forces players to actually take the knockback the server gives them.
-* **Criticals:** Catches those sneaky 0.05-block micro-jumps used to force critical hits.
+**Discord alerts that don't suck** — Get real-time cheat alerts and punishment logs piped straight to your Discord. No more alt-tabbing to check logs every 5 minutes.
 
-### 👤 Player & World
-* **Timer:** Stops clients from speeding up their game loop to send packets faster than 20 TPS.
-* **BadPackets:** Blocks impossible packet orders and crash exploits.
-* **Inventory:** Prevents moving items around while sprinting or doing things you shouldn't be able to do with an open GUI.
-* **Scaffold:** Analyzes block placement angles and speeds to catch modern bridging hacks.
-* **FastBreak:** Mathematical check based on block hardness, tool, and enchantments to stop SpeedMine/Nuker.
+**Live monitoring built in** — Type `/modac monitor <player>` and watch their violation flags roll in real-time. It's like having a spectator mode for cheaters.
+
+**Database that won't lag you** — SQLite runs async so you can pull up a player's history from two weeks ago without tanking your main thread.
+
+**Config that makes sense** — Want to ban instead of kick? Change one line. Want to tweak tolerance on specific checks? Go for it. It's your server, not mine.
 
 ---
 
-## 🚀 Setup Guide
+## What does it actually catch?
 
-1. Grab the latest `.jar` from the releases page (or build it yourself, see below).
-2. Drop it into your server's `plugins/` folder.
-3. Restart your server.
-4. Open `plugins/ModMC-AntiCheat/config.yml` to customize your punishments, VL limits, or setup your Discord Webhook.
-5. Do `/modac reload` in-game. Boom. Done.
+16 checks covering the stuff you actually care about. Not gonna list every edge case, but here's the rundown:
 
----
+### Movement
+- **Speed** — Horizontal math checks. Bunny hop, ice sprint, speed pots, the works.
+- **Fly** — Tracks airtime and vertical movement. Catches packet flight and impossible jumps.
+- **NoFall** — Stops the whole "fake ground state" exploit to avoid fall damage.
+- **Jesus** — No walking on water unless you're actually supposed to.
+- **ElytraFly** — Caps infinite flight and insane firework boost abuse.
+- **NoSlow** — Full sprint while eating? Yeah no.
 
-## 💻 Commands & Permissions
+### Combat
+- **Reach** — 3D raytracing. No hitting from 6 blocks away.
+- **KillAura** — Attack angle analysis + consistency checks.
+- **AutoClicker** — Standard deviation analysis. Robotic clicks get flagged.
+- **Velocity** — Anti-KB. Take your knockback like everyone else.
+- **Criticals** — Catches those weird micro-jumps people use to force crits.
 
-If you're an admin, you'll mainly be using these:
-
-| Command | Perm Node | What it does |
-|---|---|---|
-| `/modac alerts` | `modac.alerts` | Turns your live violation notifications on or off. |
-| `/modac verbose` | `modac.verbose` | Turns on dev-level raw data spam (good for debugging false flags). |
-| `/modac notify <player>` | `modac.alerts` | Pulls up a quick stat sheet: ping, health, gamemode, and active violations. |
-| `/modac monitor <player>` | `modac.alerts` | Tap into a player. Their specific flags will show up in your chat with a `[⊕]` prefix. |
-| `/modac history <player>` | `modac.info` | View a player's past hacking logs from the database. |
-| `/modac top` | `modac.alerts` | See the top 10 most suspicious online players right now. |
-| `/modac status` | `modac.alerts` | Check if the plugin/database/webhook are running healthy. |
-| `/modac kick <player>` | `modac.punish` | Kicks them and alerts Discord + staff. |
-| `/modac ban <player>` | `modac.punish` | Bans them and alerts Discord + staff. |
-| `/modac reload` | `modac.reload` | Reloads the config. |
-| `/modac testwebhook` | `modac.reload` | Sends a test ping to your Discord channel. |
+### Player/World
+- **Timer** — Game speed manipulation. No running at 2x speed.
+- **BadPackets** — Impossible packet orders, crash exploits, that kind of thing.
+- **Inventory** — No moving items while sprinting or doing sketchy stuff with open GUIs.
+- **Scaffold** — Block placement analysis for bridging hacks.
+- **FastBreak** — Math-based check using block hardness + tool tier. Speed mine gets caught.
 
 ---
 
-## ⚙️ For Developers (How to build)
+## � Installation
 
-We use Gradle. If you want to fork this or build it from source yourself, it's super easy.
+Seriously, it's three steps:
 
-1. Clone the repo: `git clone https://github.com/hello97-gg/modac.git`
-2. Run the Gradle wrapper:
-   - Windows: `.\gradlew.bat build`
-   - Mac/Linux: `./gradlew build`
-3. Your fresh compiled plugin will be sitting in `build/libs/ModMC-AntiCheat-1.0.0.jar`.
+1. **Download** — Grab the `.jar` from [Releases](https://github.com/hello97-gg/modac/releases) (or build from source, your call)
+2. **Drop** — Put it in your `plugins/` folder
+3. **Restart** — That's literally it
+
+### After installing:
+
+The config lives at `plugins/ModMC-AntiCheat/config.yml`. Open it up if you want to:
+- Change punishment actions (kick vs ban)
+- Set up Discord webhooks
+- Adjust VL thresholds per check
+- Tweak tolerance values
+
+Run `/modac reload` after making changes and you're golden.
+
+---
+
+## 🎮 Commands & Permissions
+
+Here's your cheat sheet:
+
+| Command | Permission | What it does |
+|--------|------------|--------------|
+| `/modac alerts` | `modac.alerts` | Toggle your violation notifications |
+| `/modac verbose` | `modac.verbose` | Dev mode — raw data for debugging |
+| `/modac notify <player>` | `modac.alerts` | Quick stats: ping, health, violations |
+| `/modac monitor <player>` | `modac.alerts` | Live flag feed for specific player |
+| `/modac history <player>` | `modac.info` | Pull up their database record |
+| `/modac top` | `modac.alerts` | Top 10 suspicious players online |
+| `/modac status` | `modac.alerts` | Plugin health check |
+| `/modac kick <player>` | `modac.punish` | Kick + Discord alert |
+| `/modac ban <player>` | `modac.punish` | Ban + Discord alert |
+| `/modac reload` | `modac.reload` | Reload config |
+| `/modac testwebhook` | `modac.reload` | Test your Discord setup |
+
+**Pro tip:** Give `modac.alerts` to your mods. They'll see flags pop up in chat automatically.
+
+---
+
+## 📚 Full Documentation
+
+Need more details? Check out the [Wiki](https://github.com/hello97-gg/modac/wiki) for:
+- Detailed check explanations
+- Configuration deep-dive
+- False positive troubleshooting
+- Discord webhook setup guide
+- API for developers
+
+---
+
+## 🔨 Building from Source
+
+If you're the type who likes to compile things yourself:
+
+```bash
+# Clone it
+git clone https://github.com/hello97-gg/modac.git
+
+# Build it
+# Windows:
+.\gradlew.bat build
+
+# Mac/Linux:
+./gradlew build
+```
+
+Your compiled jar will be in `build/libs/ModMC-AntiCheat-1.0.0.jar`
+
+---
+
+## 🤝 Contributing
+
+Found a bug? Have an idea? Open an issue or submit a PR. I actually read them.
+
+This is open source for a reason — if you can make it better, go for it.
 
 ---
 
 ## 📜 License
 
-This project is totally open-source and licensed under the **GNU General Public License v3.0**. See the [LICENSE](LICENSE) file for all the boring legal details, but basically: feel free to use it, modify it, and learn from it, just keep it open source!
+GPL v3.0. Use it, mod it, learn from it. Just keep it open source. Check [LICENSE](LICENSE) for the details.
+
+---
+
+## 💬 Questions? Issues?
+
+- **Bugs/Features:** [Open an issue](https://github.com/hello97-gg/modac/issues)
+- **Discord:** *Coming soon*
+- **SpigotMC:** *Coming soon*
+
+---
+
+**If this saved your server from cheaters, consider leaving a ⭐ — it helps others find it too.**

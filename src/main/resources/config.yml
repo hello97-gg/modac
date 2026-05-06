@@ -1,0 +1,176 @@
+# ============================================
+#   ModMC AntiCheat Configuration
+#   Version: 1.0.0
+# ============================================
+
+# General settings
+prefix: "&8[&c&lModMC&8] &7"
+
+# Alert settings
+alerts:
+  enabled: true
+  console: true
+  # Permission required to see alerts in-game
+  broadcast-permission: "modac.alerts"
+
+# Discord webhook integration
+discord:
+  enabled: false
+  webhook-url: "https://discord.com/api/webhooks/YOUR_WEBHOOK_URL"
+  # Minimum violation level before sending to Discord
+  min-vl: 10
+  # Embed color (decimal) — red
+  color: 16711680
+  # Rate limit: minimum seconds between messages per player
+  rate-limit: 30
+
+# Database settings (SQLite)
+database:
+  enabled: true
+  # File name (stored in plugin data folder)
+  file: "violations.db"
+  # Auto-purge entries older than X days (0 = never purge)
+  purge-days: 30
+
+# Violation level decay
+vl-decay:
+  # How often to decay VL (in seconds)
+  interval: 30
+  # How much to decay per interval
+  amount: 1
+
+# Punishment settings
+punishment:
+  # Message shown when kicked
+  kick-message: "&c&lModMC AntiCheat\n&7You have been removed for unfair advantage.\n&8Contact staff if you believe this is an error."
+  # Broadcast punishment to players with modac.alerts permission
+  broadcast-punishments: true
+  broadcast-format: "&8[&c&lModMC&8] &e%player% &7was punished for &c%check%&7."
+
+# ============================================
+#   Check Configuration
+#   Each check can be individually configured
+# ============================================
+
+checks:
+  # --- MOVEMENT CHECKS ---
+  speed:
+    enabled: true
+    # Maximum violations before punishment
+    max-vl: 30
+    # Punishment command (%player% = player name)
+    punish-command: "kick %player% &cUnfair Advantage - Speed"
+    # Alert threshold — start alerting at this VL
+    alert-vl: 5
+    # Tolerance multiplier (higher = more lenient)
+    tolerance: 1.05
+
+  fly:
+    enabled: true
+    max-vl: 25
+    punish-command: "kick %player% &cUnfair Advantage - Flight"
+    alert-vl: 3
+    # Maximum airtime ticks before flagging
+    max-airtime: 40
+
+  nofall:
+    enabled: true
+    max-vl: 20
+    punish-command: "kick %player% &cUnfair Advantage - NoFall"
+    alert-vl: 5
+
+  jesus:
+    enabled: true
+    max-vl: 20
+    punish-command: "kick %player% &cUnfair Advantage - Jesus"
+    alert-vl: 5
+
+  elytra:
+    enabled: true
+    max-vl: 20
+    punish-command: "kick %player% &cUnfair Advantage - ElytraFly"
+    alert-vl: 5
+    # Maximum elytra speed (blocks/tick)
+    max-speed: 3.5
+
+  # --- COMBAT CHECKS ---
+  reach:
+    enabled: true
+    max-vl: 20
+    punish-command: "kick %player% &cUnfair Advantage - Reach"
+    alert-vl: 5
+    # Maximum allowed reach distance (vanilla = 3.0, we allow some tolerance)
+    max-reach: 3.1
+    # Latency compensation — add this per 50ms of ping
+    ping-compensation: 0.05
+
+  killaura:
+    enabled: true
+    max-vl: 25
+    punish-command: "kick %player% &cUnfair Advantage - KillAura"
+    alert-vl: 5
+
+  autoclicker:
+    enabled: true
+    max-vl: 20
+    punish-command: "kick %player% &cUnfair Advantage - AutoClicker"
+    alert-vl: 10
+    # Maximum clicks per second allowed
+    max-cps: 20
+    # Minimum standard deviation in click intervals (lower = more robotic)
+    min-deviation: 15.0
+
+  velocity:
+    enabled: true
+    max-vl: 15
+    punish-command: "kick %player% &cUnfair Advantage - Velocity"
+    alert-vl: 5
+    # Minimum percentage of expected knockback the player must take
+    min-percentage: 75.0
+
+  # --- PLAYER CHECKS ---
+  timer:
+    enabled: true
+    max-vl: 20
+    punish-command: "kick %player% &cUnfair Advantage - Timer"
+    alert-vl: 10
+    # Allowed deviation from 20 tps (packets per second)
+    max-speed-percentage: 110.0
+
+  badpackets:
+    enabled: true
+    max-vl: 10
+    punish-command: "kick %player% &cUnfair Advantage - BadPackets"
+    alert-vl: 1
+
+  inventory:
+    enabled: true
+    max-vl: 15
+    punish-command: "kick %player% &cUnfair Advantage - Inventory"
+    alert-vl: 5
+
+  scaffold:
+    enabled: true
+    max-vl: 20
+    punish-command: "kick %player% &cUnfair Advantage - Scaffold"
+    alert-vl: 5
+    # Minimum angle between look direction and placed block
+    min-angle: 70.0
+
+  noslow:
+    enabled: true
+    max-vl: 15
+    punish-command: "kick %player% &cUnfair Advantage - NoSlow"
+    alert-vl: 5
+
+  fastbreak:
+    enabled: true
+    max-vl: 15
+    punish-command: "kick %player% &cUnfair Advantage - FastBreak"
+    alert-vl: 5
+
+  criticals:
+    enabled: true
+    max-vl: 15
+    punish-command: "kick %player% &cUnfair Advantage - Criticals"
+    alert-vl: 5

@@ -1,0 +1,42 @@
+name: ModMC-AntiCheat
+version: '${version}'
+main: com.modmc.anticheat.ModMCAntiCheat
+api-version: '1.16'
+description: Advanced server-side anticheat for Minecraft 1.16+
+author: ModMC
+website: https://modmc.com
+
+depend:
+  - packetevents
+
+commands:
+  modac:
+    description: ModMC AntiCheat main command
+    permission: modac.command
+    usage: /modac <subcommand>
+    aliases:
+      - anticheat
+      - ac
+
+permissions:
+  modac.command:
+    description: Access to the base anticheat command
+    default: op
+  modac.alerts:
+    description: Receive anticheat violation alerts
+    default: op
+  modac.info:
+    description: View player violation info
+    default: op
+  modac.reload:
+    description: Reload anticheat configuration
+    default: op
+  modac.toggle:
+    description: Toggle anticheat checks
+    default: op
+  modac.verbose:
+    description: Toggle verbose debug output
+    default: op
+  modac.bypass:
+    description: Bypass all anticheat checks
+    default: false

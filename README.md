@@ -100,7 +100,7 @@ Here's your cheat sheet:
 
 ## 📚 Full Documentation
 
-Need more details? Check out the [Wiki](https://github.com/hello97-gg/modac/wiki) for:
+Need more details? Check out the [Wiki](https://github.com/hello97-gg/modac/.wiki) for:
 - Detailed check explanations
 - Configuration deep-dive
 - False positive troubleshooting
